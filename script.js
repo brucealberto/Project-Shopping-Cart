@@ -1,3 +1,5 @@
+const ol = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -19,7 +21,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(
-    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!')
+    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'),
   );
 
   return section;
@@ -29,20 +31,35 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   // coloque seu código aqui
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement("li");
+  const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener("click", cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-//chama função fetcProducts
-async function callFetch() {
+async function addToCart(event) {
+  if (event.target.className === 'item__add') {
+    const idEvent = getSkuFromProductItem(event.path[1]);
+    const itemFetch = await fetchItem(idEvent);
+    const { id, title, price } = itemFetch;
+    const itemCarrinho = createCartItemElement({
+      sku: id,
+      name: title,
+      salePrice: price,
+    });
+    ol.appendChild(itemCarrinho);
+  }
+}
+function addEvento() {
+  const items = document.querySelectorAll('.item');
+  items.forEach((it) => it.addEventListener('click', addToCart));
+}
+async function callFetchProducts() {
   const prodFetch = await fetchProducts();
   prodFetch.forEach(({ id, title, thumbnail }) => {
     const pegaParametro = createProductItemElement({
@@ -50,11 +67,11 @@ async function callFetch() {
       name: title,
       image: thumbnail,
     });
-    const section = document.querySelector('.items');
-    section.appendChild(pegaParametro);
+    const item = document.querySelector('.items');
+    item.appendChild(pegaParametro);
   });
+  addEvento();
 }
-
 window.onload = () => {
-  callFetch();
+  callFetchProducts();
 };
