@@ -4,10 +4,9 @@ const fetchProducts = async () => {
 
   const response = await fetch(url);
   const data = await response.json();
-  console.log(data);
-  return data;
+  return data.results;
 };
-fetchProducts();
+
 if (typeof module !== 'undefined') {
   module.exports = {
     fetchProducts,
