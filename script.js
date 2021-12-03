@@ -1,4 +1,5 @@
 const ol = document.querySelector('.cart__items');
+const btnRemove = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -31,9 +32,14 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener() {
+function cartItemClickListener(event) {
   // coloque seu código aqui
+  event.target.remove();
 }
+const apagaOl = () => {
+  ol.innerText = '';
+};
+btnRemove.addEventListener('click', () => apagaOl());
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
