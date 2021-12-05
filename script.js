@@ -80,7 +80,8 @@ function addEvento() {
   items.forEach((it) => it.addEventListener('click', addToCart));
 }
 async function callFetchProducts() {
-  const prodFetch = await fetchProducts();
+  const data = await fetchProducts('computador');
+  const prodFetch = data.results;
   prodFetch.forEach(({ id, title, thumbnail }) => {
     const pegaParametro = createProductItemElement({
       sku: id,
@@ -103,8 +104,9 @@ const pegaLocalStorage = () => {
   ol.innerHTML = data;
   f();
 };
-window.onload = () => {
+window.onload = async () => {
   pegaLocalStorage();
-  callFetchProducts();
+  await callFetchProducts();
+  document.querySelector('.loading').remove();
   somarItem();
 };
